@@ -102,6 +102,12 @@ module.exports.createListing=async (req, res) => {
 
         // Await the fetch request to get latitude and longitude
         const response = await fetch(url2);
+
+        // Check the status code of the response
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
 
         let latitude = 0;
