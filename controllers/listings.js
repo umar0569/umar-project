@@ -93,7 +93,68 @@ module.exports.showListing=async (req,res)=>{
 //     res.redirect("listing");
 // }
 
-module.exports.createListing=async (req, res) => {
+// module.exports.createListing=async (req, res) => {
+//     console.log("Entering into createListing req!");
+
+//     try {
+//         const address = req.body.listing.location;
+//         const url2 = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
+
+//         // Await the fetch request to get latitude and longitude
+//         const response = await fetch(url2);
+
+//         // Check the status code of the response
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+
+//         const data = await response.json();
+
+//         let latitude = 0;
+//         let longitude = 0;
+
+//         if (data.length > 0) {
+//             latitude = data[0].lat;
+//             longitude = data[0].lon;
+//         } else {
+//             console.log('No results found');
+//         }
+
+//         let result = listingSchema.validate(req.body);
+//         if (result.error) {
+//             throw new ExpressError(400, result.error);
+//         }
+
+//         let url = req.file.path;
+//         let filename = req.file.filename;
+
+//         let list = req.body.listing;
+//         list.coOrd = {
+//             lat: latitude,
+//             lon: longitude,
+//         };
+
+//         console.log("The new added coordinates are:");
+//         console.log(list.coOrd);
+
+//         const neww = new listing(list);
+//         neww.owner = req.user._id;
+//         neww.image = { filename, url };
+
+//         let savedNeww = await neww.save();
+//         console.log("The saved listing is " + savedNeww);
+
+//         req.flash("success", "New Listing Created!");
+//         res.redirect("/listing");
+
+//     } catch (error) {
+//         console.error('Error:', error);
+//         req.flash("error", "Failed to create new listing.");
+//         res.redirect("/listing");
+//     }
+// };
+
+module.exports.createListing = async (req, res) => {
     console.log("Entering into createListing req!");
 
     try {
@@ -105,50 +166,58 @@ module.exports.createListing=async (req, res) => {
 
         // Check the status code of the response
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(HTTP error! status: ${response.status});
         }
 
-        const data = await response.json();
+        // Attempt to parse the response as JSON
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            const data = await response.json();
 
-        let latitude = 0;
-        let longitude = 0;
+            let latitude = 0;
+            let longitude = 0;
 
-        if (data.length > 0) {
-            latitude = data[0].lat;
-            longitude = data[0].lon;
+            if (data.length > 0) {
+                latitude = data[0].lat;
+                longitude = data[0].lon;
+            } else {
+                console.log('No results found');
+            }
+
+            let result = listingSchema.validate(req.body);
+            if (result.error) {
+                throw new ExpressError(400, result.error);
+            }
+
+            let url = req.file.path;
+            let filename = req.file.filename;
+
+            let list = req.body.listing;
+            list.coOrd = {
+                lat: latitude,
+                lon: longitude,
+            };
+
+            console.log("The new added coordinates are:");
+            console.log(list.coOrd);
+
+            const neww = new listing(list);
+            neww.owner = req.user._id;
+            neww.image = { filename, url };
+
+            let savedNeww = await neww.save();
+            console.log("The saved listing is " + savedNeww);
+
+            req.flash("success", "New Listing Created!");
+            res.redirect("/listing");
         } else {
-            console.log('No results found');
+            // If the response is not JSON, log it for debugging
+            const textResponse = await response.text();
+            console.log('Response is not JSON:', textResponse);
+            throw new Error('Invalid JSON response from geocoding service.');
         }
-
-        let result = listingSchema.validate(req.body);
-        if (result.error) {
-            throw new ExpressError(400, result.error);
-        }
-
-        let url = req.file.path;
-        let filename = req.file.filename;
-
-        let list = req.body.listing;
-        list.coOrd = {
-            lat: latitude,
-            lon: longitude,
-        };
-
-        console.log("The new added coordinates are:");
-        console.log(list.coOrd);
-
-        const neww = new listing(list);
-        neww.owner = req.user._id;
-        neww.image = { filename, url };
-
-        let savedNeww = await neww.save();
-        console.log("The saved listing is " + savedNeww);
-
-        req.flash("success", "New Listing Created!");
-        res.redirect("/listing");
-
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error:', error.message);
         req.flash("error", "Failed to create new listing.");
         res.redirect("/listing");
     }
