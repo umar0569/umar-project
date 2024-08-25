@@ -166,7 +166,7 @@ module.exports.createListing = async (req, res) => {
 
         // Check the status code of the response
         if (!response.ok) {
-            throw new Error(HTTP error! status: ${response.status});
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         // Attempt to parse the response as JSON
