@@ -24,8 +24,6 @@
             </div>
         </div>
         <br>
-        
-        
         <%if(currUser && (currUser._id.equals(user.owner._id) || currUser._id.equals("66caf80bf30db63de54c57ab"))){%>
             <div class="col-6 offset-3 btns">
                 <a href="/listing/<%= user._id %>/edit" class="btn btn-dark edit-btn  col-2">Edit</a>
@@ -48,7 +46,8 @@
                 <div class="mb-3 mt-3">
                     <label for="rating" class="form-label">Rating:</label>
                 <fieldset class="starability-slot">
-                    
+
+                
                     <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
                     <input type="radio" id="first-rate1" name="review[rating]" value="1" />
                     <label for="first-rate1" title="Terrible">1 star</label>
@@ -72,8 +71,6 @@
 
             </form>
             <% } %>
-            
-            
             <% if(user.reviews.length>0){ %>
                 <hr>
             <div class="row">
