@@ -38,60 +38,61 @@ module.exports.showListing=async (req,res)=>{
 }
 
 
-// module.exports.createListing=async(req,res)=>{
-//     var latitude=0;
-//     var longitude=0;
-//     console.log("Entering into createListing  req!");
+module.exports.createListing=async(req,res)=>{
+    console.log("it is entering into createListing which is in controllers/listing");
+    var latitude=0;
+    var longitude=0;
+    console.log("Entering into createListing  req!");
 
-//     const address = req.body.listing.location;
-//     const url2 = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
-//     fetch(url2)
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.length > 0) {
-//         // console.log('Coordinates:', data[0].lat, data[0].lon);
+    const address = req.body.listing.location;
+    const url2 = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
+    await fetch(url2)
+    .then(response => response.json())
+    .then(data => {
+        if (data.length > 0) {
+        // console.log('Coordinates:', data[0].lat, data[0].lon);
         
         
-//         } else {
-//         console.log('No results found');
-//         }
-//         latitude=data[0].lat;
-//         longitude=data[0].lon;
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//     });
+        } else {
+        console.log('No results found');
+        }
+        latitude=data[0].lat;
+        longitude=data[0].lon;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 
 
 
 
-//     let result=listingSchema.validate(req.body);
-//     if(result.error){
-//         throw new ExpressError(400,result.error);
-//     }
-//     let url=req.file.path;
-//     let filename=req.file.filename;
+    let result=listingSchema.validate(req.body);
+    if(result.error){
+        throw new ExpressError(400,result.error);
+    }
+    let url=req.file.path;
+    let filename=req.file.filename;
     
-//     let list=req.body.listing;
-//     list.coOrd={
-//         lat: latitude,
-//         lon:longitude,
-//     };
-//     console.log("the new added coordinates are:");
-//     console.log(list.coOrd);
-//     const neww=new listing(list);
-//     neww.owner=req.user._id;
-//     neww.image={filename,url};
-//     // neww.coOrd={
-//     //     lat: 14.4493717,
-//     //     lon:79.9873763,
-//     // };
+    let list=req.body.listing;
+    list.coOrd={
+        lat: latitude,
+        lon:longitude,
+    };
+    console.log("the new added coordinates are:");
+    console.log(list.coOrd);
+    const neww=new listing(list);
+    neww.owner=req.user._id;
+    neww.image={filename,url};
+    // neww.coOrd={
+    //     lat: 14.4493717,
+    //     lon:79.9873763,
+    // };
 
-//     let savedNeww=await neww.save();
-//     console.log("the saved listing is"+savedNeww);
-//     req.flash("success","New Listing Created!");
-//     res.redirect("listing");
-// }
+    let savedNeww=await neww.save();
+    console.log("the saved listing is"+savedNeww);
+    req.flash("success","New Listing Created!");
+    res.redirect("listing");
+}
 
 // module.exports.createListing=async (req, res) => {
 //     console.log("Entering into createListing req!");
@@ -154,74 +155,73 @@ module.exports.showListing=async (req,res)=>{
 //     }
 // };
 
-module.exports.createListing = async (req, res) => {
-    console.log("Entering into createListing req!");
+// module.exports.createListing = async (req, res) => {
+//     console.log("Entering into createListing req!");
 
-    try {
-        const address = req.body.listing.location;
-        const url2 = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
+//     try {
+//         const address = req.body.listing.location;
+//         const url2 = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
 
-        // Await the fetch request to get latitude and longitude
-        const response = await fetch(url2);
+//         // Await the fetch request to get latitude and longitude
+//         const response = await fetch(url2);
 
-        // Check the status code of the response
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+//         // Check the status code of the response
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         // Attempt to parse the response as JSON
+//         const contentType = response.headers.get("content-type");
+//         if (contentType && contentType.indexOf("application/json") !== -1) {
+//             const data = await response.json();
 
-        // Attempt to parse the response as JSON
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.indexOf("application/json") !== -1) {
-            const data = await response.json();
+//             let latitude = 0;
+//             let longitude = 0;
 
-            let latitude = 0;
-            let longitude = 0;
+//             if (data.length > 0) {
+//                 latitude = data[0].lat;
+//                 longitude = data[0].lon;
+//             } else {
+//                 console.log('No results found');
+//             }
 
-            if (data.length > 0) {
-                latitude = data[0].lat;
-                longitude = data[0].lon;
-            } else {
-                console.log('No results found');
-            }
+//             let result = listingSchema.validate(req.body);
+//             if (result.error) {
+//                 throw new ExpressError(400, result.error);
+//             }
 
-            let result = listingSchema.validate(req.body);
-            if (result.error) {
-                throw new ExpressError(400, result.error);
-            }
+//             let url = req.file.path;
+//             let filename = req.file.filename;
 
-            let url = req.file.path;
-            let filename = req.file.filename;
+//             let list = req.body.listing;
+//             list.coOrd = {
+//                 lat: latitude,
+//                 lon: longitude,
+//             };
 
-            let list = req.body.listing;
-            list.coOrd = {
-                lat: latitude,
-                lon: longitude,
-            };
+//             console.log("The new added coordinates are:");
+//             console.log(list.coOrd);
 
-            console.log("The new added coordinates are:");
-            console.log(list.coOrd);
+//             const neww = new listing(list);
+//             neww.owner = req.user._id;
+//             neww.image = { filename, url };
 
-            const neww = new listing(list);
-            neww.owner = req.user._id;
-            neww.image = { filename, url };
+//             let savedNeww = await neww.save();
+//             console.log("The saved listing is " + savedNeww);
 
-            let savedNeww = await neww.save();
-            console.log("The saved listing is " + savedNeww);
-
-            req.flash("success", "New Listing Created!");
-            res.redirect("/listing");
-        } else {
-            // If the response is not JSON, log it for debugging
-            const textResponse = await response.text();
-            console.log('Response is not JSON:', textResponse);
-            throw new Error('Invalid JSON response from geocoding service.');
-        }
-    } catch (error) {
-        console.error('Error:', error.message);
-        req.flash("error", "Failed to create new listing.");
-        res.redirect("/listing");
-    }
-};
+//             req.flash("success", "New Listing Created!");
+//             res.redirect("/listing");
+//         } else {
+//             // If the response is not JSON, log it for debugging
+//             const textResponse = await response.text();
+//             console.log('Response is not JSON:', textResponse);
+//             throw new Error('Invalid JSON response from geocoding service.');
+//         }
+//     } catch (error) {
+//         console.error('Error:', error.message);
+//         req.flash("error", "Failed to create new listing.");
+//         res.redirect("/listing");
+//     }
+// };
 
 //this is edit form
 module.exports.renderForm=async (req,res)=>{
@@ -246,7 +246,7 @@ module.exports.updateListing=async(req,res)=>{
         let url=req.file.path;
         let filename=req.file.filename;
         list.image={filename,url};
-        list.coordinates=[51.505, -0.09];
+        
         
 
     }

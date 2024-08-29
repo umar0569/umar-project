@@ -1,11 +1,10 @@
 <% layout("/layouts/boilerPlate.ejs") %>
 <head>
-    
-    
-    
+
+
 </head>
 <body>
-    
+
     <div class="row">
         <div class="col-8 offset-3 mt-3 mb-3">
             <h3><%= user.title %></h3>
@@ -24,7 +23,7 @@
             </div>
         </div>
         <br>
-        <%if(currUser && (currUser._id.equals(user.owner._id) || currUser._id.equals("66caf80bf30db63de54c57ab"))){%>
+        <%if(currUser && (currUser._id.equals(user.owner._id) || currUser._id.equals("66c3546fc6de12c35e1c32ab")) ){%>
             <div class="col-6 offset-3 btns">
                 <a href="/listing/<%= user._id %>/edit" class="btn btn-dark edit-btn  col-2">Edit</a>
                 <form method="POST" action="/listing/<%= user._id %>/delete?_method=DELETE">
@@ -35,7 +34,7 @@
 
         
         <!-- review section -->
-        <% if(currUser){ %>
+        <% if(currUser!=undefined){ %>
         <div class="col-8 offset-3 mt-3 mb-3">
             <hr>
             <h4>Leave a Note</h4>
@@ -94,7 +93,7 @@
             </div>
             <% } %>
             
-            
+
         </div>
         <div class="col-8 offset-3 mt-3 mb-3">
             <h3>Where you will be</h3>
@@ -104,7 +103,8 @@
 </body>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
-    var jUser = <%- JSON.stringify(user) %>;
+    var jUser = <%- JSON.stringify(user) %>; 
+    console.log("the jUser in show.ejs details are:");
     console.log(jUser);
     var map = L.map('map').setView([ jUser.coOrd.lat, jUser.coOrd.lon ], 13);
     var osm=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {

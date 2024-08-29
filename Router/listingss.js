@@ -22,11 +22,15 @@ app.use(express.urlencoded({extended:true}));
 //controller folder
 const listingController=require("../controllers/listings.js");
 
+
+
 router.route("/")
 //index route
 .get(wrapAsync(listingController.index))
 //create new listing route
-
+//this is the format
+// isLogin,upload.single("listing[image][url]"),validateListing,
+// wrapAsync(listingController.createListing)
 .post(isLogin,upload.single("listing[image][url]"),validateListing,
     wrapAsync(listingController.createListing));
 // .post(upload.single("listing[image][url]"),(req,res)=>{
@@ -43,6 +47,7 @@ router.route("/:id")
 .get(isLogin,wrapAsync(listingController.showListing)
 )
 //put data route(Update)
+// 
 .put(isLogin,isOwner,upload.single("listing[image][url]"),validateListing,wrapAsync(listingController.updateListing)
 );
 // validateListing,

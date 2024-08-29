@@ -10,7 +10,7 @@ const review=require("./models/review");
 
 
 
-//env
+
 if(process.env.NODE_ENV != "Production"){
     require("dotenv").config();
 
@@ -79,7 +79,7 @@ const store=MongoStore.create({
 
 store.on("error",(err)=>{
     console.log("Error in mongo store",err);
-})
+});
 const sessionValues={
     store,
     secret:"mysupersecretcode",
@@ -100,15 +100,19 @@ passport.deserializeUser(User2.deserializeUser());
 
 
 //flash middleware
-app.use((req,res,next)=>{
+app.use(async(req,res,next)=>{
+    console.log(res.locals.success);
     res.locals.success=req.flash("success");
     res.locals.error=req.flash("error");
     res.locals.currUser=req.user;
+    console.log(res.locals.success);
+    console.log("the req.user is :"+req.user);
+    console.log("the currUser is :"+res.locals.currUser);
     next();
 });
 
-// const mongoUrl="mongodb://127.0.0.1:27017/wanderlust";
-
+const mongoUrl="mongodb://127.0.0.1:27017/wanderlust";
+// const dbUrl=process.env.ATLASDB_URL;
 main().then((result)=>{
     console.log("connected to the database successfully!");
 
@@ -128,12 +132,12 @@ app.listen(port,(req,res)=>{
     console.log(`app is listening on ${port}`);
 });
 
-//home page
-// app.get("/",wrapAsync(async (req,res)=>{
-//     let lists=await listing.find({});
-//     res.render("listing/index.ejs",{lists});
-// })
-// );
+// home page
+app.get("/",wrapAsync(async (req,res)=>{
+    let lists=await listing.find({});
+    res.render("listing/index.ejs",{lists});
+})
+);
 
 
 app.post("/search",async(req,res)=>{
