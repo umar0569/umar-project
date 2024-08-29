@@ -108,6 +108,8 @@ module.exports.createListing = async (req, res) => {
     try {
         const response = await fetch(url2);
         const data = await response.json();
+        latitude = parseFloat(data[0].lat);
+        longitude = parseFloat(data[0].lon);
 
         if (data.length > 0) {
             console.log('Coordinates:', data[0].lat, data[0].lon);
