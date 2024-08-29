@@ -3,9 +3,9 @@ const {CloudinaryStorage}=require("multer-storage-cloudinary");
 
 console.log("Entering into cloudconfig.js");
 cloudinary.config({
-    cloud_name:process.env.CLOUD_NAME2,
-    api_key:process.env.CLOUD_API_KEY2,
-    api_secret:process.env.CLOUD_API_SECRET2
+    cloud_name:process.env.CLOUD_NAME,
+    api_key:process.env.CLOUD_API_KEY,
+    api_secret:process.env.CLOUD_API_SECRET
 });
 console.log("Exited from cloudconfig.js");
 const storage=new CloudinaryStorage({
